@@ -13,7 +13,13 @@ export class ServiceListComponent implements OnInit {
 
   services: Service[] = [];
   currentCategoryId: number = 1;
-  searchMode: boolean = true;
+  previousCategoryId: number = 1;
+  searchMode: boolean = false;
+
+  // pagination:
+  thePageNumber: number = 1;
+  thePageSize: number = 5;
+  theTotalElements: number = 0;
 
   constructor(private serviceService: ServiceService,
               private route: ActivatedRoute) { }
@@ -49,16 +55,45 @@ export class ServiceListComponent implements OnInit {
       this.currentCategoryId = 1; // has no effect
     }
     
+    // check if we have a different category than previous,
+    // if we have diffrent category then set thePageNumber back to 1
+    if (this.previousCategoryId != this.currentCategoryId) {
+      this.thePageNumber = 1;
+      this.previousCategoryId = this.currentCategoryId;
+      console.log('categoryId changed: '+this.currentCategoryId+this.thePageNumber);
+    } else
+    console.log('categoryId same: '+this.currentCategoryId+this.thePageNumber);
+
+
+    this.serviceService.getServiceListPaginate(this.thePageNumber - 1, this.thePageSize, this.currentCategoryId)
+                                                .subscribe(
+                                                  data => {
+                                                    this.services = data._embedded.services;
+                                                    this.thePageNumber = data.page.number + 1;
+                                                    this.thePageSize = data.page.size;
+                                                    this.theTotalElements = data.page.totalElements;
+                                                  }
+                                                );
+
     // get the services for the id
-    this.serviceService.getServiceList(this.currentCategoryId, hasCategoryId).subscribe(
-      data => {
-        console.log('Services = ' + JSON.stringify(data));
-        this.services = data;
-      }
-    )
+    //this.serviceService.getServiceList(this.currentCategoryId, hasCategoryId).subscribe(
+    //  data => {
+    //    console.log('Services = ' + JSON.stringify(data));
+    //    this.services = data;
+    //  }
+    //);
     
   }
-
+/*
+  processResult() {
+    return data => {
+      this.services = data._embedded.services;
+      this.thePageNumber = data.page.number + 1;
+      this.thePageSize = data.page.size;
+      this.theTotalElements = data.page.totalElements;
+    }
+  }
+*/
   handleSearchServices() {
 
     const theKeyword: string | null = this.route.snapshot.paramMap.get('keyword');
@@ -68,6 +103,12 @@ export class ServiceListComponent implements OnInit {
       }
     )
 
+  }
+
+  updatePageSize(pageSize: number) {
+    this.thePageSize = pageSize;
+    this.thePageNumber = 1;
+    this.listServices();
   }
 
 }

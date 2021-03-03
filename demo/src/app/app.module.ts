@@ -10,6 +10,8 @@ import { ServiceCategoryMenuComponent } from './components/service-category-menu
 import { SearchComponent } from './components/search/search.component';
 import { ServiceDetailsComponent } from './components/service-details/service-details.component';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
+
 const routs: Routes = [
   {path: 'search/:keyword', component: ServiceListComponent},
   {path: 'category/:id', component: ServiceListComponent},
@@ -31,7 +33,8 @@ const routs: Routes = [
   imports: [
     RouterModule.forRoot(routs),
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
   providers: [ServiceService],
   bootstrap: [AppComponent]

@@ -22,14 +22,26 @@ export class ServiceService {
     return this.httpClient.get<Service>(serviceUrl);
   }
 
-  getServiceList(theCategoryid: number, searchByCategory: boolean = true): Observable<Service[]> {
+  getServiceList(theCategoryId: number, searchByCategory: boolean = true): Observable<Service[]> {
 
     let searchUrl: string = this.baseUrl;
     if (searchByCategory)
     // build URL based on category id
-      searchUrl += '/search/findByCategoryId?id=' + theCategoryid;
+      searchUrl += '/search/findByCategoryId?id=' + theCategoryId;
 
     return this.getServices(searchUrl);  
+  }
+
+  getServiceListPaginate(thePage: number, thePageSize: number, theCategoryId: number): Observable<GetResponseServices> {
+
+    let pageUrl: string = this.baseUrl;
+    //if (searchByCategory)
+    // build URL based on category id
+      pageUrl += '/search/findByCategoryId?id=' + theCategoryId
+                +   '&page=' + thePage
+                +   '&size=' + thePageSize;
+
+    return this.httpClient.get<GetResponseServices>(pageUrl)  
   }
 
   searchServices(theKeyword: string | null): Observable<Service[]> {
@@ -41,6 +53,7 @@ export class ServiceService {
   }
   
   private getServices(searchUrl: string): Observable<Service[]> {
+    
     return this.httpClient.get<GetResponseServices>(searchUrl).pipe(
       map(response => response._embedded.services)
     );
@@ -58,6 +71,12 @@ export class ServiceService {
 interface GetResponseServices {
   _embedded: {
     services: Service[];
+  },
+  page: {
+    size: number,
+    totalElements: number,
+    totalPages: number,
+    number: number
   }
 }
 

@@ -20,11 +20,45 @@
                     </div>
                 </div>
 
-                <!-- if product is null/undefined or its length is 0 -->
+                <!-- if service is null/undefined or its length is 0 -->
                 <div *ngIf="services?.length == 0" class="alert alert-warning col-md-12" role="alert">
                     No service found.
                 </div>
 
+            </div>
+
+            <div class="footer-pagination">
+                <div class="row">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-9" style="padding-left: 30%">
+                            
+                                <ngb-pagination [(page)]="thePageNumber"
+                                                [pageSize]="thePageSize"
+                                                [collectionSize]="theTotalElements"
+                                                (pageChange)="listServices()">
+                                </ngb-pagination>
+                            
+                            </div>
+
+                            <div class="col-md-3 mt-2" style="text-align: right;">
+
+                                <label for="pageSizes" class="mr-2">
+                                    Page Size
+                                </label>
+                                <select #pageSizes id="pageSizes" (change)="updatePageSize(+pageSizes.value)">
+                                    <option  selected="true">5</option>
+                                    <option>10</option>
+                                    <option>20</option>
+                                    <option>50</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
