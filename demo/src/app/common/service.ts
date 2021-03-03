@@ -1,4 +1,5 @@
 export class Service {
+    id: number = 1;
     name: string = "";
     description: string = "";
     price: number = 1;

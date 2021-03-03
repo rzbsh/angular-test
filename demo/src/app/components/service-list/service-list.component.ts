@@ -1,4 +1,4 @@
-import { ThrowStmt } from '@angular/compiler';
+import { DomElementSchemaRegistry, ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Service } from 'src/app/common/service';
@@ -13,6 +13,7 @@ export class ServiceListComponent implements OnInit {
 
   services: Service[] = [];
   currentCategoryId: number = 1;
+  searchMode: boolean = true;
 
   constructor(private serviceService: ServiceService,
               private route: ActivatedRoute) { }
@@ -25,6 +26,16 @@ export class ServiceListComponent implements OnInit {
 
   listServices() {
 
+    this.searchMode = this.route.snapshot.paramMap.has('keyword');
+
+    if (this.searchMode)
+      this.handleSearchServices();
+    else
+      this.handleListServices();
+  }
+
+  handleListServices() {
+
     // check if "id" paramter is available
     // route: use the activated route
     // snapshot: state of route at this given moment of time
@@ -35,15 +46,28 @@ export class ServiceListComponent implements OnInit {
       this.currentCategoryId = +this.route.snapshot.paramMap.getAll('id')[0];
     } else {
       // default to 1
-      this.currentCategoryId = 1;
+      this.currentCategoryId = 1; // has no effect
     }
     
     // get the services for the id
-    this.serviceService.getServiceList(this.currentCategoryId).subscribe(
+    this.serviceService.getServiceList(this.currentCategoryId, hasCategoryId).subscribe(
+      data => {
+        console.log('Services = ' + JSON.stringify(data));
+        this.services = data;
+      }
+    )
+    
+  }
+
+  handleSearchServices() {
+
+    const theKeyword: string | null = this.route.snapshot.paramMap.get('keyword');
+    this.serviceService.searchServices(theKeyword).subscribe(
       data => {
         this.services = data;
       }
     )
+
   }
 
 }

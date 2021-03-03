@@ -1,5 +1,3 @@
-<p>service-list works!</p>
-
 <div class="main-content">
     <div class="section-content section-content-p30">
         <div class="container-fluid">
@@ -7,11 +5,24 @@
 
                 <div *ngFor="let tempService of services" class="col-md3">
                     <div class="product-box">
-                        <img src="assets\images\products\placeholder.png" />
-                        <h1>{{ tempService.name }}</h1>
-                        <div class="price">{{ tempService.price }}</div>
-                        <a href="#" class="primary-btn">Add to card</a>
+                        <a routerLink="/services/{{ tempService.id }}">
+                            <img src="assets/images/products/placeholder.png" />
+                        <!-- </a>
+                        <a routerLink="/services/{{ tempService.id }}">-->
+                            <h1>{{ tempService.name }}</h1>
+                        </a>
+                        <div class="price">
+                            {{ tempService.price }}
+                        </div>
+                        <a href="#" class="primary-btn">
+                            Add to card
+                        </a>
                     </div>
+                </div>
+
+                <!-- if product is null/undefined or its length is 0 -->
+                <div *ngIf="services?.length == 0" class="alert alert-warning col-md-12" role="alert">
+                    No service found.
                 </div>
 
             </div>
