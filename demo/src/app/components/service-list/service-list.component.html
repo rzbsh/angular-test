@@ -14,9 +14,9 @@
                         <div class="price">
                             {{ tempService.price }}
                         </div>
-                        <a href="#" class="primary-btn">
+                        <button class="btn btn-primary btn-sm" (click)="addToCart(tempService)">
                             Add to card
-                        </a>
+                        </button>
                     </div>
                 </div>
 
@@ -38,6 +38,8 @@
                                 <ngb-pagination [(page)]="thePageNumber"
                                                 [pageSize]="thePageSize"
                                                 [collectionSize]="theTotalElements"
+                                                [maxSize]="5"
+                                                [boundaryLinks]="true"
                                                 (pageChange)="listServices()">
                                 </ngb-pagination>
                             

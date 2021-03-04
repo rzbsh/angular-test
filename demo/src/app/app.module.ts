@@ -10,9 +10,12 @@ import { ServiceCategoryMenuComponent } from './components/service-category-menu
 import { SearchComponent } from './components/search/search.component';
 import { ServiceDetailsComponent } from './components/service-details/service-details.component';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CartStatusComponent } from './components/cart-status/cart-status.component';
+import { CartDetailsComponent } from './components/cart-details/cart-details.component'
 
 const routs: Routes = [
+  {path: 'cart-details', component: CartDetailsComponent},
   {path: 'search/:keyword', component: ServiceListComponent},
   {path: 'category/:id', component: ServiceListComponent},
   {path: 'category', component: ServiceListComponent},
@@ -29,6 +32,8 @@ const routs: Routes = [
     ServiceCategoryMenuComponent,
     SearchComponent,
     ServiceDetailsComponent,
+    CartStatusComponent,
+    CartDetailsComponent,
   ],
   imports: [
     RouterModule.forRoot(routs),

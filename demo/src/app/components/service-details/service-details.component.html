@@ -2,10 +2,12 @@
 
     <div class="container-fluid"> 
 
-        <img src="assets/images/products/placeholder.png" class="detail-img"> <!-- @TODO {{ service.imageUrl }} -->
+        <img src="assets/images/products/placeholder.png" class="detail-img"> <!-- @TODO: {{ service.imageUrl }} -->
         <h3>{{ service.name }}</h3>
         <div class="price">{{ service.price | currency: 'USD' }}</div>
-        <a href="#" class="primary-btn">Add to cart</a>
+        <button class="btn btn-primary btn-sm" (click)="addToCart()">
+            Add to card
+        </button>
         <hr>
         <h4>Description:</h4>
         <p>{{ service.description }}</p>

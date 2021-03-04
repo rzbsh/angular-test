@@ -1,4 +1,5 @@
 export class Service {
+
     id: number = 1;
     name: string = "";
     description: string = "";
@@ -7,4 +8,5 @@ export class Service {
     active: boolean = true;
     created!: Date;
     modified!: Date;
+    
 }

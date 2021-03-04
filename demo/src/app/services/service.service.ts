@@ -51,6 +51,18 @@ export class ServiceService {
 
     return this.getServices(searchUrl);  
   }
+
+  searchServicesPaginate(thePage: number, thePageSize: number, theKeyword: string | null): Observable<GetResponseServices> {
+
+    let pageUrl: string = this.baseUrl;
+    //if (searchByCategory)
+    // build URL based on category id
+      pageUrl += '/search/findByNameContaining?name=' + theKeyword
+                + '&page=' + thePage
+                + '&size=' + thePageSize;
+
+    return this.httpClient.get<GetResponseServices>(pageUrl)  
+  }
   
   private getServices(searchUrl: string): Observable<Service[]> {
     
@@ -68,7 +80,7 @@ export class ServiceService {
 
 }
 
-interface GetResponseServices {
+export interface GetResponseServices {
   _embedded: {
     services: Service[];
   },

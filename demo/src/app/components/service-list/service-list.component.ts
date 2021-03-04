@@ -1,8 +1,10 @@
 import { DomElementSchemaRegistry, ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CartItem } from 'src/app/common/cart-item';
 import { Service } from 'src/app/common/service';
-import { ServiceService } from 'src/app/services/service.service';
+import { CartService } from 'src/app/services/cart.service';
+import { ServiceService, GetResponseServices } from 'src/app/services/service.service';
 
 @Component({
   selector: 'app-service-list',
@@ -21,7 +23,11 @@ export class ServiceListComponent implements OnInit {
   thePageSize: number = 5;
   theTotalElements: number = 0;
 
+  previousKeyword: string | null = null;
+
+
   constructor(private serviceService: ServiceService,
+              private cartService: CartService,
               private route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -38,6 +44,7 @@ export class ServiceListComponent implements OnInit {
       this.handleSearchServices();
     else
       this.handleListServices();
+
   }
 
   handleListServices() {
@@ -66,14 +73,7 @@ export class ServiceListComponent implements OnInit {
 
 
     this.serviceService.getServiceListPaginate(this.thePageNumber - 1, this.thePageSize, this.currentCategoryId)
-                                                .subscribe(
-                                                  data => {
-                                                    this.services = data._embedded.services;
-                                                    this.thePageNumber = data.page.number + 1;
-                                                    this.thePageSize = data.page.size;
-                                                    this.theTotalElements = data.page.totalElements;
-                                                  }
-                                                );
+                                                .subscribe(this.processResult());
 
     // get the services for the id
     //this.serviceService.getServiceList(this.currentCategoryId, hasCategoryId).subscribe(
@@ -84,31 +84,53 @@ export class ServiceListComponent implements OnInit {
     //);
     
   }
-/*
+
   processResult() {
-    return data => {
+
+    return (data: GetResponseServices) => {
       this.services = data._embedded.services;
       this.thePageNumber = data.page.number + 1;
       this.thePageSize = data.page.size;
       this.theTotalElements = data.page.totalElements;
     }
+
   }
-*/
+
   handleSearchServices() {
 
     const theKeyword: string | null = this.route.snapshot.paramMap.get('keyword');
-    this.serviceService.searchServices(theKeyword).subscribe(
+
+    // check if we have a different keyword than previous
+    if (this.previousKeyword != theKeyword) {
+      this.thePageNumber = 1;
+      this.previousKeyword = theKeyword;
+    }
+
+    this.serviceService.searchServicesPaginate(this.thePageNumber - 1, this.thePageSize, theKeyword)
+    .subscribe(
       data => {
-        this.services = data;
+        this.services = data._embedded.services;
+        this.thePageNumber = data.page.number + 1;
+        this.thePageSize = data.page.size;
+        this.theTotalElements = data.page.totalElements;
       }
-    )
+    );
 
   }
 
   updatePageSize(pageSize: number) {
+
     this.thePageSize = pageSize;
     this.thePageNumber = 1;
     this.listServices();
+
   }
 
+  addToCart(theService: Service) {
+
+    const theCartItem = new CartItem(theService);
+    this.cartService.addToCart(theCartItem);
+
+  }
+  
 }
